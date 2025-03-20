@@ -243,7 +243,7 @@ struct PopularCard: View {
     }
 }
 // MARK: - Other Views
-
+//
 struct MyShelfView: View {
     var body: some View {
         Text("MyShelf View")
