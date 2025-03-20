@@ -9,11 +9,6 @@ struct LogInView: View {
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
     
-    let client = SupabaseClient(
-        supabaseURL: URL(string: "https://cdhawptmjahlirkdjqkt.supabase.co")!,
-        supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNkaGF3cHRtamFobGlya2RqcWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIyOTM4OTAsImV4cCI6MjA1Nzg2OTg5MH0.gtp_OZQAuevaUSc-zs6QpFxU9oXt-YrX1DDCSOX4FEE"
-    )
-    
     var body: some View {
         NavigationStack {
             VStack {
@@ -128,7 +123,7 @@ struct LogInView: View {
     
     private func logIn() {
         // Validate email domain
-        let collegeDomain = ".edu.in"
+        let collegeDomain = "@gmail.com"
         guard collegeEmail.hasSuffix(collegeDomain) else {
             alertMessage = "Please use your college email address (\(collegeDomain))."
             showAlert = true
@@ -138,7 +133,7 @@ struct LogInView: View {
         // Send magic link
         Task {
             do {
-                try await client.auth.signIn(email: collegeEmail, password: password)
+                try await SupabaseManager.shared.signIn(email: collegeEmail, password: password)
                 isLoggedIn = true // Navigate to HomeView on successful login
             } catch {
                 alertMessage = "Error sending magic link: \(error.localizedDescription)"
