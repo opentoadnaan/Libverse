@@ -7,9 +7,6 @@
 
 import SwiftUI
 
-
-import SwiftUI
-
 // MARK: - Model for Popular Books
 struct PopularBook: Identifiable {
     let id = UUID()
@@ -46,10 +43,10 @@ struct TabBarView: View {
                 }
                 .tag(2)
             
-            AlertView()
+            MyBookView()
                 .tabItem {
-                    Image(systemName: "bell.fill")
-                    Text("Alert")
+                    Image(systemName: "book.fill")
+                    Text("MyBook")
                 }
                 .tag(3)
         }
@@ -246,11 +243,6 @@ struct PopularCard: View {
     }
 }
 // MARK: - Other Views
-struct SearchView: View {
-    var body: some View {
-        Text("Search View")
-    }
-}
 
 struct MyShelfView: View {
     var body: some View {
@@ -258,9 +250,9 @@ struct MyShelfView: View {
     }
 }
 
-struct AlertView: View {
+struct MyBookView: View {
     var body: some View {
-        Text("Alert View")
+        Text("MyBook View")
     }
 }
 
