@@ -54,6 +54,16 @@ struct TabBarView: View {
                 .tag(3)
         }
         .tint(.orange)
+        .onAppear {
+            // Set the tab bar background color
+            let appearance = UITabBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = UIColor(red: 255/255, green: 239/255, blue: 210/255, alpha: 1.0)
+            
+            // Use this appearance for both normal and scrolling states
+            UITabBar.appearance().standardAppearance = appearance
+            UITabBar.appearance().scrollEdgeAppearance = appearance
+        }
     }
 }
 
@@ -67,101 +77,138 @@ struct HomeView: View {
     
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 15) {
-                    // Profile Section
+            ZStack(alignment: .top) {
+                ScrollView {
+                    // Padding to push content below the fixed header
+                    VStack(alignment: .leading, spacing: 5) {
+                        Color.clear.frame(height: 50) // Reduced from 120 to 80
+
+                        // Popular Section 1
+                        VStack(alignment: .leading, spacing: 10) {
+                            sectionHeader(title: "Popular")
+                            horizontalBookScroll()
+                        }
+                        
+                        // Popular Section 2
+                        VStack(alignment: .leading, spacing: 10) {
+                            sectionHeader(title: "Popular")
+                            horizontalBookScroll()
+                        }
+                        
+                        // Recently Added
+                        VStack(alignment: .leading, spacing: 10) {
+                            sectionHeader(title: "Recently Added")
+                            horizontalBookScroll()
+                        }
+                    }
+                    .padding(.vertical)
+                }
+                .background(Color(red: 255/255, green: 239/255, blue: 210/255).edgesIgnoringSafeArea(.all))
+
+                // Fixed Header with Title and Alert/Profile
+                VStack(spacing: 8) {
                     HStack {
+                        Button(action: {
+                            // Alert button action
+                        }) {
+                            Image(systemName: "bell.fill")
+                                .resizable()
+                                .frame(width: 25, height: 25)
+                                .foregroundColor(.orange)
+                        }
+                        
                         Spacer()
+                        
+                        Text("Libverse")
+                            .font(.largeTitle)
+                            .bold()
+                        
+                        Spacer()
+                        
                         Image(systemName: "person.circle.fill")
                             .resizable()
                             .frame(width: 40, height: 40)
                             .foregroundColor(.orange)
                     }
                     .padding(.horizontal)
-                    
-                    // Title
-                    Text("Member")
-                        .font(.largeTitle)
-                        .bold()
-                        .padding(.horizontal)
-                    
-                    // Announcements Section
-                    VStack(alignment: .leading, spacing: 15) {
-                        HStack {
-                            Text("Announcements")
-                                .font(.title2)
-                                .bold()
-                            Spacer()
-                            Button("See All") {
-                                // Action
-                            }
-                            .foregroundColor(.orange)
-                            .font(.system(size: 16, weight: .medium))
-                        }
-                        .padding(.horizontal)
-                        
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 15) {
-                                ForEach(0..<3) { _ in
-                                    AnnouncementCard()
-                                }
-                            }
-                            .padding(.horizontal)
-                        }
-                    }
-                    
-                    // Popular Section
-                    VStack(alignment: .leading, spacing: 10) {
-                        HStack {
-                            Text("Popular")
-                                .font(.title2)
-                                .bold()
-                            Spacer()
-                            Button("See All") {
-                            }
-                            .foregroundColor(.orange)
-                            .font(.system(size: 16, weight: .medium))
-                        }
-                        .padding(.horizontal)
-                        
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: -35) {
-                                ForEach(popularBooks) { book in
-                                    PopularCard(book: book)
-                                }
-                            }
-                            .padding(.leading)
-                        }
-                    }
+                    .frame(height: 50)
                 }
-                .padding(.vertical)
+                .background(Color(red: 255/255, green: 239/255, blue: 210/255))
             }
-            .background(Color(red: 255/255, green: 239/255, blue: 210/255).edgesIgnoringSafeArea(.all))
-                        .navigationBarHidden(true)
             .navigationBarHidden(true)
         }
-        
+    }
+    
+    // Helper for section headers
+    func sectionHeader(title: String) -> some View {
+        HStack {
+            Text(title)
+                .font(.title2)
+                .bold()
+            Spacer()
+            Button("See All") {}
+                .foregroundColor(.orange)
+                .font(.system(size: 16, weight: .medium))
+        }
+        .padding(.horizontal)
+    }
+    
+    // Helper for horizontal scroll of books
+    func horizontalBookScroll() -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: -35) {
+                ForEach(popularBooks) { book in
+                    PopularCard(book: book)
+                }
+            }
+            .padding(.leading, 11)
+        }
     }
 }
+// Announcements Section
+//                    VStack(alignment: .leading, spacing: 15) {
+//                        HStack {
+//                            Text("Announcements")
+//                                .font(.title2)
+//                                .bold()
+//                            Spacer()
+//                            Button("See All") {
+//                                // Action
+//                            }
+//                            .foregroundColor(.orange)
+//                            .font(.system(size: 16, weight: .medium))
+//                        }
+//                        .padding(.horizontal)
+//
+//                        ScrollView(.horizontal, showsIndicators: false) {
+//                            HStack(spacing: 15) {
+//                                ForEach(0..<3) { _ in
+//                                    AnnouncementCard()
+//                                }
+//                            }
+//                            .padding(.horizontal)
+//                        }
+//                    }
+
 
 // MARK: - Announcement Card
-struct AnnouncementCard: View {
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Announcement Title")
-                .font(.headline)
-            Text("This is a sample announcement text that describes the important information.")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-                .lineLimit(2)
-        }
-        .padding()
-        .frame(width: 250)
-        .frame(height: 200)
-        .background(Color(.systemGray6))
-        .cornerRadius(12)
-    }
-}
+//struct AnnouncementCard: View {
+//    var body: some View {
+//        VStack(alignment: .leading, spacing: 10) {
+//            Text("Announcement Title")
+//                .font(.headline)
+//            Text("This is a sample announcement text that describes the important information.")
+//                .font(.subheadline)
+//                .foregroundColor(.gray)
+//                .lineLimit(2)
+//        }
+//        .padding()
+//        .frame(width: 250)
+//        .frame(height: 200)
+//        .background(Color(.systemGray6))
+//        .cornerRadius(12)
+//    }
+//}
 
 // MARK: - Popular Book Card with Black Square Border and Increased Width
 struct PopularCard: View {
@@ -194,7 +241,6 @@ struct PopularCard: View {
                 .font(.custom("Charter", size: 13))
                 .foregroundColor(.gray)
                 .lineLimit(1)
-            
         }
         .frame(width: 180)
     }
