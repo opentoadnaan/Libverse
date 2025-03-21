@@ -1,8 +1,8 @@
 //
 //  SupabaseManager.swift
-//  LMS
+//  LibVerse
 //
-//  Created by ARYAN SINGHAL on 19/03/25.
+//  Created by ARYAN SINGHAL on 20/03/25.
 //
 
 import Foundation
@@ -51,13 +51,13 @@ class SupabaseManager: ObservableObject {
     }
     
     func signIn(email: String, password: String) async throws -> Session {
-            let session = try await client.auth.signIn(email: email, password: password)
-            DispatchQueue.main.async {
-                self.currentUser = session.user
-                self.currentSession = session
-            }
-            print("User ID: \(session.user.id)")
-            return session
+        let session = try await client.auth.signIn(email: email, password: password)
+        DispatchQueue.main.async {
+            self.currentUser = session.user
+            self.currentSession = session
+        }
+        print("User ID: \(session.user.id)")
+        return session
     }
     
     func signOut() async throws {
@@ -66,40 +66,19 @@ class SupabaseManager: ObservableObject {
     }
     
     func verifyOTP(email: String, otp: String, completion: @escaping (Result<Session, Error>) -> Void) {
-            Task {
-                do {
-                    let response = try await client.auth.verifyOTP(email: email, token: otp, type: .email)
-                    DispatchQueue.main.async {
-                        completion(.success(response.session!))
-                    }
-                } catch {
-                    DispatchQueue.main.async {
-                        completion(.failure(error))
-                    }
+        Task {
+            do {
+                let response = try await client.auth.verifyOTP(email: email, token: otp, type: .email)
+                DispatchQueue.main.async {
+                    completion(.success(response.session!))
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
                 }
             }
         }
-    
-    
-//    func saveUser(email: String, password: String, completion: @escaping (Result<Void, Error>) -> Void) {
-//            Task {
-//                do {
-//                    let userData: [String: AnyEncodable] = [
-//                        "email": AnyEncodable(email),
-//                        "password": AnyEncodable(password)
-//                    ]
-//
-//                    try await supabase.database.from("users").insert(userData).execute()
-//                    DispatchQueue.main.async {
-//                        completion(.success(()))
-//                    }
-//                } catch {
-//                    DispatchQueue.main.async {
-//                        completion(.failure(error))
-//                    }
-//                }
-//            }
-//        }
+    }
     
     func resetPassword(email: String) async throws {
         try await client.auth.resetPasswordForEmail(email)
