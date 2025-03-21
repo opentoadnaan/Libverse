@@ -3,7 +3,6 @@
 //  LibVerse
 //
 //  Created by Astha Arora on 20/03/25.
-//
 
 import SwiftUI
 
@@ -25,10 +24,9 @@ struct SearchView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                // Cream colored background
+                
                 Color(red: 255/255, green: 243/255, blue: 230/255)
                     .ignoresSafeArea()
-                
                 VStack(spacing: 0) {
                     Color.clear
                         .frame(height: 10)
@@ -36,14 +34,14 @@ struct SearchView: View {
                     // Orange section with search at top
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Search")
-                            .font(.custom("Monaco", size: 35))
-//                            .fontWeight(.bold)
+                            .font(.custom("Menlo", size: 35))
                             .padding(.horizontal)
                         
                         HStack(spacing: 0) {
                             TextField("Title, author, host, or topic", text: $searchText)
                                 .padding()
                                 .frame(height: 44)
+                                .font(.custom("Menlo", size: 15))
                                 .background(Color(.systemBackground))
                                 .cornerRadius(0)
                                 .overlay(
@@ -59,8 +57,8 @@ struct SearchView: View {
                                 }
                                 .frame(height: 44)
                                 .padding(.horizontal, 16)
-                                .background(Color(red: 255/255, green: 111/255, blue: 45/255))
-                                .foregroundColor(.white)
+                                .background(Color(.systemOrange))
+                                .foregroundColor(.black)
                                 .cornerRadius(0)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 0)
@@ -72,7 +70,7 @@ struct SearchView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 20)
-                    .background(Color(red: 255/255, green: 111/255, blue: 45/255))
+                    .background(Color(red: 255/255, green: 147/255, blue: 0/255))
                     
                     // Categories List
                     ScrollView {
@@ -84,7 +82,7 @@ struct SearchView: View {
                                             .foregroundColor(.black)
                                             .frame(width: 24, height: 24)
                                         Text(category)
-                                            .font(.body)
+                                            .font(.custom("Menlo", size: 15))
                                         Spacer()
                                     }
                                     .padding(.vertical, 16)

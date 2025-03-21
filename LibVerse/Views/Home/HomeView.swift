@@ -3,7 +3,6 @@
 //  LibVerse
 //
 //  Created by Shahma Ansari on 19/03/25.
-//
 
 import SwiftUI
 
@@ -260,5 +259,3 @@ struct MyBookView: View {
 #Preview {
     HomeView()
 }
-
-
