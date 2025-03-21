@@ -61,16 +61,6 @@ struct SignUpView: View {
                         customSecureField(placeholder: "Confirm Password", text: $confirmPassword)
                     }
                     
-                    HStack {
-                        Spacer()
-                        Button(action: {}) {
-                            Text("Forgot Password")
-                                .font(.custom("Courier", size: 16))
-                                .foregroundColor(.black)
-                                .font(.subheadline)
-                        }
-                    }
-                    
                     Spacer()
                     
                     Button(action: signUp) {

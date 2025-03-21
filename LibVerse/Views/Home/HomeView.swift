@@ -3,7 +3,6 @@
 //  LibVerse
 //
 //  Created by Shahma Ansari on 19/03/25.
-//
 
 import SwiftUI
 
@@ -243,7 +242,7 @@ struct PopularCard: View {
     }
 }
 // MARK: - Other Views
-
+//
 struct MyShelfView: View {
     var body: some View {
         Text("MyShelf View")
@@ -260,5 +259,3 @@ struct MyBookView: View {
 #Preview {
     HomeView()
 }
-
-
