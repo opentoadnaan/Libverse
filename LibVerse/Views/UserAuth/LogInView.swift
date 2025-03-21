@@ -77,8 +77,13 @@ struct LogInView: View {
                 }
             }
             .background(Color(red: 255/255, green: 239/255, blue: 210/255).edgesIgnoringSafeArea(.all))
+            // Navigation destination for HomeView
             .navigationDestination(isPresented: $isLoggedIn) {
                 HomeView()
+            }
+            // Navigation destination for OTPVerificationView
+            .navigationDestination(isPresented: $showOTPView) {
+                OTPVerificationView(email: collegeEmail , password: password)
             }
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
@@ -135,11 +140,11 @@ struct LogInView: View {
             return
         }
         
-        // Send magic link
+        // Send magic link and trigger OTP flow
         Task {
             do {
                 try await SupabaseManager.shared.signIn(email: collegeEmail, password: password)
-                isLoggedIn = true // Navigate to HomeView on successful login
+                showOTPView = true // Present the OTPVerificationView
             } catch {
                 alertMessage = "Error sending magic link: \(error.localizedDescription)"
                 showAlert = true

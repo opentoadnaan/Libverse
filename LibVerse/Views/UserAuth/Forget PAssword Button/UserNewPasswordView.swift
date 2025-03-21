@@ -155,7 +155,9 @@ struct UserNewPasswordView: View {
                     alertMessage = "Password updated successfully!"
                     showAlert = true
                     dismiss()
-                    showUserInitialView = true
+                    // Navigate to login page
+                    showUserInitialView = false
+                    showMainApp = false
                 }
             } else {
                 alertMessage = "Error: Email not found for password reset"

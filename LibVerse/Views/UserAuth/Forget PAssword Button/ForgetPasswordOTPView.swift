@@ -130,8 +130,9 @@ struct ForgotPasswordOTPView: View {
         isLoading = true
         Task {
             do {
-                // Implement OTP verification logic here
-                try await Task.sleep(nanoseconds: 1_000_000_000) // Simulated delay
+                // Store the OTP in UserDefaults for password update
+                UserDefaults.standard.set(otp, forKey: "resetOTP")
+                
                 DispatchQueue.main.async {
                     isLoading = false
                     withAnimation {
