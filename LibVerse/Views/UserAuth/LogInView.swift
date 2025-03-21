@@ -4,10 +4,12 @@ import Supabase
 struct LogInView: View {
     @State private var collegeEmail: String = ""
     @State private var password: String = ""
-    
-    @State private var isLoggedIn: Bool = false // State to control navigation
+    @State private var showForgotPasswordFlow = false
+    @State private var isLoggedIn: Bool = false
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
+    @State private var showOTPView = false
+    @State private var isLoading = false
     
     var body: some View {
         NavigationStack {
@@ -43,11 +45,14 @@ struct LogInView: View {
                         // Forgot Password Link
                         HStack {
                             Spacer()
-                            Button(action: {}) {
+                            Button(action: { showForgotPasswordFlow = true }) {
                                 Text("Forgot Password")
                                     .font(.custom("Courier", size: 16))
                                     .foregroundColor(.black)
                             }
+                        }
+                        .sheet(isPresented: $showForgotPasswordFlow) {
+                            ForgotPasswordEmailView()
                         }
                         
                         // Log In Button
