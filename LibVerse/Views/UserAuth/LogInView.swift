@@ -5,10 +5,10 @@ struct LogInView: View {
     @State private var collegeEmail: String = ""
     @State private var password: String = ""
     @State private var showForgotPassword: Bool = false
-    
-    @State private var isLoggedIn: Bool = false // State to control navigation
+    @State private var showOTPVerification: Bool = false
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
+    @State private var isLoading: Bool = false
     
     let client = SupabaseClient(
         supabaseURL: URL(string: "https://cdhawptmjahlirkdjqkt.supabase.co")!,
@@ -56,15 +56,21 @@ struct LogInView: View {
                             }
                         }
                         
-                        // Log In Button
-                        Button(action: logIn) {
-                            Text("Log In")
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color(red: 255/255, green: 111/255, blue: 45/255))
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
+                        // Send OTP Button
+                        Button(action: sendOTP) {
+                            if isLoading {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            } else {
+                                Text("Send OTP")
+                            }
                         }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(red: 255/255, green: 111/255, blue: 45/255))
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .disabled(isLoading || collegeEmail.isEmpty || password.isEmpty)
                         
                         // Navigation to SignUpView
                         NavigationLink(destination: SignUpView().navigationBarBackButtonHidden(true)) {
@@ -78,14 +84,14 @@ struct LogInView: View {
                 }
             }
             .background(Color(red: 255/255, green: 239/255, blue: 210/255).edgesIgnoringSafeArea(.all))
-            .navigationDestination(isPresented: $isLoggedIn) {
-                HomeView()
+            .navigationDestination(isPresented: $showOTPVerification) {
+                OTPVerificationView(email: collegeEmail, password: password)
             }
             .sheet(isPresented: $showForgotPassword) {
                 ForgotPasswordView()
             }
             .alert(isPresented: $showAlert) {
-                Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+                Alert(title: Text("Message"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
         }
     }
@@ -130,23 +136,43 @@ struct LogInView: View {
         }
     }
     
-    private func logIn() {
+    private func sendOTP() {
         // Validate email domain
-        let collegeDomain = ".edu.in"
+        let collegeDomain = "@gmail.com"
         guard collegeEmail.hasSuffix(collegeDomain) else {
             alertMessage = "Please use your college email address (\(collegeDomain))."
             showAlert = true
             return
         }
         
-        // Send magic link
+        isLoading = true
+        
         Task {
             do {
-                try await client.auth.signIn(email: collegeEmail, password: password)
-                isLoggedIn = true // Navigate to HomeView on successful login
+                // First try to sign in with email and password
+                let authResponse = try await client.auth.signIn(
+                    email: collegeEmail,
+                    password: password
+                )
+                
+                // If sign in is successful, send OTP
+                try await client.auth.signInWithOTP(
+                    email: collegeEmail
+//                    options: AuthOptions(
+//                        data: ["password": password]
+//                    )
+                )
+                
+                await MainActor.run {
+                    isLoading = false
+                    showOTPVerification = true
+                }
             } catch {
-                alertMessage = "Error sending magic link: \(error.localizedDescription)"
-                showAlert = true
+                await MainActor.run {
+                    isLoading = false
+                    alertMessage = "Invalid credentials or error sending OTP: \(error.localizedDescription)"
+                    showAlert = true
+                }
             }
         }
     }
