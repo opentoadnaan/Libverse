@@ -8,6 +8,8 @@ struct LogInView: View {
     @State private var isLoggedIn: Bool = false
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
+    @State private var showOTPView = false
+    @State private var isLoading = false
     
     var body: some View {
         NavigationStack {

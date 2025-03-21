@@ -52,10 +52,19 @@ class SupabaseManager: ObservableObject {
     
     func signIn(email: String, password: String) async throws -> Session {
         let session = try await client.auth.signIn(email: email, password: password)
+        try await client.auth.signOut() // Sign out temporarily to force OTP
+                try await client.auth.signInWithOTP(email: email)
+                
+                // Store email for OTP verification
+                UserDefaults.standard.set(email, forKey: "pendingLoginEmail")
+                UserDefaults.standard.set(password, forKey: "pendingLoginPassword")
+                
+        
         DispatchQueue.main.async {
             self.currentUser = session.user
             self.currentSession = session
         }
+        
         print("User ID: \(session.user.id)")
         return session
     }
@@ -79,6 +88,32 @@ class SupabaseManager: ObservableObject {
             }
         }
     }
+    
+    func verifyLoginOTP(email: String, otp: String) async throws -> Session {
+            let response = try await client.auth.verifyOTP(
+                email: email,
+                token: otp,
+                type: .email
+            )
+            
+            // If OTP is verified, complete login with stored credentials
+            if let storedPassword = UserDefaults.standard.string(forKey: "pendingLoginPassword") {
+                let session = try await client.auth.signIn(email: email, password: storedPassword)
+                
+                // Clear stored credentials
+                UserDefaults.standard.removeObject(forKey: "pendingLoginEmail")
+                UserDefaults.standard.removeObject(forKey: "pendingLoginPassword")
+                
+                DispatchQueue.main.async {
+                    self.currentUser = session.user
+                    self.currentSession = session
+                }
+                
+                return session
+            } else {
+                throw NSError(domain: "Login", code: -1, userInfo: [NSLocalizedDescriptionKey: "Login credentials not found"])
+            }
+        }
     
     func verifyPasswordReset(token: String, newPassword: String) async throws {
         // First verify the token
