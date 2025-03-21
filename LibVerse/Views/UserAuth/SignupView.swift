@@ -24,7 +24,7 @@ struct SignUpView: View {
         !collegeEmail.isEmpty &&
         !password.isEmpty &&
         password == confirmPassword &&
-        collegeEmail.hasSuffix("@gmail.com") &&
+        collegeEmail.hasSuffix(".edu.in") &&
         password.count >= 6
     }
 

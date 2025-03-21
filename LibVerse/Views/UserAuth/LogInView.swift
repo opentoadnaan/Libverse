@@ -4,6 +4,7 @@ import Supabase
 struct LogInView: View {
     @State private var collegeEmail: String = ""
     @State private var password: String = ""
+    @State private var showForgotPassword: Bool = false
     
     @State private var isLoggedIn: Bool = false // State to control navigation
     @State private var showAlert: Bool = false
@@ -32,7 +33,7 @@ struct LogInView: View {
                                 .bold()
                                 .multilineTextAlignment(.center)
                             
-                            Text("Unlock the full access of the world’s most fascinating digital library, Discover millions of ebooks, audiobooks, magazines and more.")
+                            Text("Unlock the full access of the world's most fascinating digital library, Discover millions of ebooks, audiobooks, magazines and more.")
                                 .font(.custom("Courier", size: 16))
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal)
@@ -48,7 +49,7 @@ struct LogInView: View {
                         // Forgot Password Link
                         HStack {
                             Spacer()
-                            Button(action: {}) {
+                            Button(action: { showForgotPassword = true }) {
                                 Text("Forgot Password")
                                     .font(.custom("Courier", size: 16))
                                     .foregroundColor(.black)
@@ -79,6 +80,9 @@ struct LogInView: View {
             .background(Color(red: 255/255, green: 239/255, blue: 210/255).edgesIgnoringSafeArea(.all))
             .navigationDestination(isPresented: $isLoggedIn) {
                 HomeView()
+            }
+            .sheet(isPresented: $showForgotPassword) {
+                ForgotPasswordView()
             }
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
