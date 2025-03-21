@@ -40,18 +40,34 @@ struct SearchView: View {
 //                            .fontWeight(.bold)
                             .padding(.horizontal)
                         
-                        HStack {
-                            Image(systemName: "magnifyingglass")
-                                .foregroundColor(.secondary)
+                        HStack(spacing: 0) {
                             TextField("Title, author, host, or topic", text: $searchText)
+                                .padding()
+                                .frame(height: 44)
+                                .background(Color(.systemBackground))
+                                .cornerRadius(0)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 0)
+                                        .stroke(Color.black, lineWidth: 1.25)
+                                )
+                            
+                            Button(action: {
+                                // Action for search button
+                            }) {
+                                HStack {
+                                    Image(systemName: "magnifyingglass")
+                                }
+                                .frame(height: 44)
+                                .padding(.horizontal, 16)
+                                .background(Color(red: 255/255, green: 111/255, blue: 45/255))
+                                .foregroundColor(.white)
+                                .cornerRadius(0)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 0)
+                                        .stroke(Color.black, lineWidth: 1.25)
+                                )
+                            }
                         }
-                        .padding()
-                        .background(Color(.systemBackground))
-                        .cornerRadius(0)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 0)
-                                .stroke(Color.black, lineWidth: 1.25)
-                        )
                         .padding(.horizontal)
                     }
                     .frame(maxWidth: .infinity)
